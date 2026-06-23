@@ -1,0 +1,21 @@
+name: Deploy
+
+# Publishes the dashboard whenever code is pushed to main, or on demand.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Serialize with the hourly monitor so two Pages deployments never overlap.
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  pages:
+    uses: ./.github/workflows/pages.yml
