@@ -1,0 +1,44 @@
+name: Monitor
+
+# Hourly health checks. Records the latest snapshot + history to public/data,
+# commits it, then redeploys so the dashboard reflects the new data.
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run monitor
+      - name: Commit monitoring data
+        run: |
+          git config user.name "sentinel-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data
+          if git diff --staged --quiet; then
+            echo "No data changes to commit."
+          else
+            git commit -m "chore(data): update monitoring snapshot"
+            git push
+          fi
+
+  deploy:
+    needs: check
+    uses: ./.github/workflows/pages.yml
