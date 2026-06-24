@@ -19,6 +19,12 @@ export const sites: Site[] = [
     url: "https://vinersar31.github.io/loan_tracker/",
     description: "Loan tracking web app",
   },
+  {
+    id: "personal-ops",
+    name: "Personal Ops",
+    url: "https://vinersar31.github.io/personal-ops/",
+    description: "Personal operations dashboard",
+  },
 ];
 
 /** A site counts as "up" when its HTTP status code is below this value. */

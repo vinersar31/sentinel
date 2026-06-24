@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-24T11:47:22.200Z",
+  "generatedAt": "2026-06-24T12:31:45.538Z",
   "sites": [
     {
       "id": "portfolio",
@@ -8,8 +8,8 @@
       "description": "Personal developer portfolio",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 114,
-      "checkedAt": "2026-06-24T11:47:22.200Z"
+      "responseTimeMs": 182,
+      "checkedAt": "2026-06-24T12:31:45.538Z"
     },
     {
       "id": "loan-tracker",
@@ -18,8 +18,18 @@
       "description": "Loan tracking web app",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 75,
-      "checkedAt": "2026-06-24T11:47:22.200Z"
+      "responseTimeMs": 110,
+      "checkedAt": "2026-06-24T12:31:45.538Z"
+    },
+    {
+      "id": "personal-ops",
+      "name": "Personal Ops",
+      "url": "https://vinersar31.github.io/personal-ops/",
+      "description": "Personal operations dashboard",
+      "up": true,
+      "statusCode": 200,
+      "responseTimeMs": 48,
+      "checkedAt": "2026-06-24T12:31:45.538Z"
     }
   ]
 }
