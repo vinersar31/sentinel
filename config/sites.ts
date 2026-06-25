@@ -25,6 +25,12 @@ export const sites: Site[] = [
     url: "https://vinersar31.github.io/personal-ops/",
     description: "Personal operations dashboard",
   },
+  {
+    id: "sentinel",
+    name: "Sentinel",
+    url: "https://vinersar31.github.io/sentinel/",
+    description: "Sentinel status dashboard",
+  },
 ];
 
 /** A site counts as "up" when its HTTP status code is below this value. */
