@@ -1,3 +1,12 @@
 {
-  "incidents": []
+  "incidents": [
+    {
+      "id": "loan-tracker-2026-07-17T17:14:26.446Z",
+      "siteId": "loan-tracker",
+      "siteName": "Loan Tracker",
+      "start": "2026-07-17T17:14:26.446Z",
+      "end": null,
+      "lastCode": 503
+    }
+  ]
 }
