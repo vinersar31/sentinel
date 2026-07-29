@@ -1,16 +1,14 @@
 /**
  * Sentinel monitor.
  *
- * Probes every configured site, then updates the JSON data the dashboard reads:
- *   - public/data/history/<id>.json  rolling per-site check history (pruned)
- *   - public/data/status.json        latest snapshot for every site
- *   - public/data/incidents.json     open/closed outage windows
+ * Probes every configured site, then updates the Firestore data the dashboard reads:
+ *   - sentinel_history/<id>          rolling per-site check history (pruned)
+ *   - sentinel/status                latest snapshot for every site
+ *   - sentinel/incidents             open/closed outage windows
  *
  * Runs on Node 22 (built-in fetch) via `npm run monitor`, locally and in CI.
  */
-import { promises as fs } from "node:fs";
-import path from "node:path";
-
+import { getDb } from "../lib/firebase";
 import {
   CHECK_TIMEOUT_MS,
   HISTORY_RETENTION_DAYS,
@@ -27,8 +25,6 @@ import type {
   StatusFile,
 } from "../lib/types";
 
-const DATA_DIR = path.join(process.cwd(), "public", "data");
-const HISTORY_DIR = path.join(DATA_DIR, "history");
 const RETENTION_MS = HISTORY_RETENTION_DAYS * 24 * 60 * 60 * 1000;
 
 interface ProbeResult {
@@ -56,33 +52,25 @@ async function probe(site: Site): Promise<ProbeResult> {
   }
 }
 
-async function readJson<T>(file: string, fallback: T): Promise<T> {
-  try {
-    return JSON.parse(await fs.readFile(file, "utf8")) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-async function writeJson(file: string, data: unknown): Promise<void> {
-  await fs.mkdir(path.dirname(file), { recursive: true });
-  await fs.writeFile(file, `${JSON.stringify(data, null, 2)}\n`, "utf8");
-}
-
 async function appendHistory(
   site: Site,
   check: Check,
   now: number,
 ): Promise<void> {
-  const file = path.join(HISTORY_DIR, `${site.id}.json`);
-  const history = await readJson<HistoryFile>(file, {
-    id: site.id,
-    checks: [],
-  });
+  const db = getDb();
+  const docRef = db.collection("sentinel_history").doc(site.id);
+
+  let history: HistoryFile = { id: site.id, checks: [] };
+  const doc = await docRef.get();
+  if (doc.exists) {
+    history = doc.data() as HistoryFile;
+  }
+
   const cutoff = now - RETENTION_MS;
   const checks = history.checks.filter((c) => Date.parse(c.t) >= cutoff);
   checks.push(check);
-  await writeJson(file, { id: site.id, checks } satisfies HistoryFile);
+
+  await docRef.set({ id: site.id, checks } satisfies HistoryFile);
 }
 
 function updateIncidents(
@@ -120,11 +108,13 @@ async function main(): Promise<void> {
   const now = Date.now();
   const nowIso = new Date(now).toISOString();
 
-  const { incidents: existing } = await readJson<IncidentsFile>(
-    path.join(DATA_DIR, "incidents.json"),
-    { incidents: [] },
-  );
-  let incidents = existing;
+  const db = getDb();
+  const incidentsDoc = await db.collection("sentinel").doc("incidents").get();
+  const existingIncidents = incidentsDoc.exists
+    ? (incidentsDoc.data() as IncidentsFile).incidents
+    : [];
+
+  let incidents = existingIncidents;
   const statuses: SiteStatus[] = [];
 
   for (const site of sites) {
@@ -157,16 +147,18 @@ async function main(): Promise<void> {
     );
   }
 
-  await writeJson(path.join(DATA_DIR, "status.json"), {
+  await db.collection("sentinel").doc("status").set({
     generatedAt: nowIso,
     sites: statuses,
   } satisfies StatusFile);
-  await writeJson(path.join(DATA_DIR, "incidents.json"), {
+
+  await db.collection("sentinel").doc("incidents").set({
     incidents,
   } satisfies IncidentsFile);
 
   const upCount = statuses.filter((s) => s.up).length;
   console.log(`\n${upCount}/${statuses.length} sites up · ${nowIso}`);
+  process.exit(0);
 }
 
 main().catch((err) => {

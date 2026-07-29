@@ -1,7 +1,7 @@
 name: Monitor
 
-# Hourly health checks. Records the latest snapshot + history to public/data,
-# commits it, then redeploys so the dashboard reflects the new data.
+# Hourly health checks. Records the latest snapshot + history to Firestore,
+# then redeploys so the dashboard reflects the new data.
 on:
   schedule:
     - cron: "0 * * * *"
@@ -27,18 +27,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run monitor
-      - name: Commit monitoring data
-        run: |
-          git config user.name "sentinel-bot"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/data
-          if git diff --staged --quiet; then
-            echo "No data changes to commit."
-          else
-            git commit -m "chore(data): update monitoring snapshot"
-            git push
-          fi
+        env:
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
 
   deploy:
     needs: check
     uses: ./.github/workflows/pages.yml
+    secrets: inherit

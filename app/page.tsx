@@ -12,6 +12,7 @@ export default async function Home() {
     readAllHistory(sites.map((s) => s.id)),
   ]);
 
+  // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
   const views: SiteView[] = sites.map((site) => {
     const checks = history[site.id]?.checks ?? [];

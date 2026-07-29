@@ -19,3 +19,4 @@ concurrency:
 jobs:
   pages:
     uses: ./.github/workflows/pages.yml
+    secrets: inherit
