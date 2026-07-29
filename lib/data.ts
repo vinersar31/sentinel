@@ -1,44 +1,50 @@
-import { promises as fs } from "node:fs";
-import path from "node:path";
-
+import { getDb } from "./firebase";
 import type { HistoryFile, IncidentsFile, StatusFile } from "./types";
 
 /**
- * Build-time readers for the monitoring data in `public/data`.
+ * Build-time readers for the monitoring data in Firestore.
  *
- * These run on the server during `next build` (static export), so they use the
- * filesystem directly. Each reader is defensive: if a file is missing or
- * malformed it returns an empty fallback so the dashboard still renders.
+ * These run on the server during `next build` (static export). Each reader is defensive:
+ * if a document is missing or malformed it returns an empty fallback so the dashboard still renders.
  */
 
-const DATA_DIR = path.join(process.cwd(), "public", "data");
-
-async function readJson<T>(file: string, fallback: T): Promise<T> {
+export async function readStatus(): Promise<StatusFile> {
   try {
-    return JSON.parse(await fs.readFile(file, "utf8")) as T;
-  } catch {
-    return fallback;
+    const db = getDb();
+    const doc = await db.collection("sentinel").doc("status").get();
+    if (doc.exists) {
+      return doc.data() as StatusFile;
+    }
+  } catch (error) {
+    console.error("Error reading status from Firestore:", error);
   }
+  return { generatedAt: "", sites: [] };
 }
 
-export function readStatus(): Promise<StatusFile> {
-  return readJson<StatusFile>(path.join(DATA_DIR, "status.json"), {
-    generatedAt: "",
-    sites: [],
-  });
+export async function readIncidents(): Promise<IncidentsFile> {
+  try {
+    const db = getDb();
+    const doc = await db.collection("sentinel").doc("incidents").get();
+    if (doc.exists) {
+      return doc.data() as IncidentsFile;
+    }
+  } catch (error) {
+    console.error("Error reading incidents from Firestore:", error);
+  }
+  return { incidents: [] };
 }
 
-export function readIncidents(): Promise<IncidentsFile> {
-  return readJson<IncidentsFile>(path.join(DATA_DIR, "incidents.json"), {
-    incidents: [],
-  });
-}
-
-export function readHistory(id: string): Promise<HistoryFile> {
-  return readJson<HistoryFile>(path.join(DATA_DIR, "history", `${id}.json`), {
-    id,
-    checks: [],
-  });
+export async function readHistory(id: string): Promise<HistoryFile> {
+  try {
+    const db = getDb();
+    const doc = await db.collection("sentinel_history").doc(id).get();
+    if (doc.exists) {
+      return doc.data() as HistoryFile;
+    }
+  } catch (error) {
+    console.error(`Error reading history for ${id} from Firestore:`, error);
+  }
+  return { id, checks: [] };
 }
 
 export async function readAllHistory(
