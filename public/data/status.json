@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-04T14:18:19.237Z",
+  "generatedAt": "2026-08-04T16:52:30.402Z",
   "sites": [
     {
       "id": "portfolio",
@@ -8,8 +8,8 @@
       "description": "Personal developer portfolio",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 201,
-      "checkedAt": "2026-08-04T14:18:19.237Z"
+      "responseTimeMs": 209,
+      "checkedAt": "2026-08-04T16:52:30.402Z"
     },
     {
       "id": "loan-tracker",
@@ -18,8 +18,8 @@
       "description": "Loan tracking web app",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 77,
-      "checkedAt": "2026-08-04T14:18:19.237Z"
+      "responseTimeMs": 145,
+      "checkedAt": "2026-08-04T16:52:30.402Z"
     },
     {
       "id": "personal-ops",
@@ -28,18 +28,18 @@
       "description": "Personal operations dashboard",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 72,
-      "checkedAt": "2026-08-04T14:18:19.237Z"
+      "responseTimeMs": 129,
+      "checkedAt": "2026-08-04T16:52:30.402Z"
     },
     {
       "id": "sentinel",
       "name": "Sentinel",
       "url": "https://vinersar31.github.io/sentinel/",
       "description": "Sentinel status dashboard",
-      "up": true,
-      "statusCode": 200,
-      "responseTimeMs": 66,
-      "checkedAt": "2026-08-04T14:18:19.237Z"
+      "up": false,
+      "statusCode": 503,
+      "responseTimeMs": 59,
+      "checkedAt": "2026-08-04T16:52:30.402Z"
     }
   ]
 }

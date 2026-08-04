@@ -7,6 +7,14 @@
       "start": "2026-07-17T17:14:26.446Z",
       "end": "2026-07-17T19:13:06.831Z",
       "lastCode": 503
+    },
+    {
+      "id": "sentinel-2026-08-04T16:52:30.402Z",
+      "siteId": "sentinel",
+      "siteName": "Sentinel",
+      "start": "2026-08-04T16:52:30.402Z",
+      "end": null,
+      "lastCode": 503
     }
   ]
 }
