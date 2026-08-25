@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-08-25T20:30:38.772Z",
+  "generatedAt": "2026-08-25T21:29:47.624Z",
   "sites": [
     {
       "id": "portfolio",
       "name": "Portfolio",
       "url": "https://vinersardan.com",
       "description": "Personal developer portfolio",
-      "up": true,
-      "statusCode": 200,
-      "responseTimeMs": 242,
-      "checkedAt": "2026-08-25T20:30:38.772Z"
+      "up": false,
+      "statusCode": null,
+      "responseTimeMs": null,
+      "checkedAt": "2026-08-25T21:29:47.624Z"
     },
     {
       "id": "loan-tracker",
@@ -18,8 +18,8 @@
       "description": "Loan tracking web app",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 115,
-      "checkedAt": "2026-08-25T20:30:38.772Z"
+      "responseTimeMs": 149,
+      "checkedAt": "2026-08-25T21:29:47.624Z"
     },
     {
       "id": "personal-ops",
@@ -28,8 +28,8 @@
       "description": "Personal operations dashboard",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 113,
-      "checkedAt": "2026-08-25T20:30:38.772Z"
+      "responseTimeMs": 59,
+      "checkedAt": "2026-08-25T21:29:47.624Z"
     },
     {
       "id": "sentinel",
@@ -38,8 +38,8 @@
       "description": "Sentinel status dashboard",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 101,
-      "checkedAt": "2026-08-25T20:30:38.772Z"
+      "responseTimeMs": 539,
+      "checkedAt": "2026-08-25T21:29:47.624Z"
     }
   ]
 }
