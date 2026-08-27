@@ -1,4 +1,3 @@
-import { Activity, Clock, ShieldCheck } from "lucide-react";
 
 import { formatMs, formatPercent } from "@/lib/format";
 
@@ -17,47 +16,17 @@ export function SummaryBar({
 }: SummaryBarProps) {
   const allUp = operational === total;
 
-  const stats = [
-    {
-      label: "Operational",
-      value: `${operational}/${total}`,
-      icon: ShieldCheck,
-      tone: allUp
-        ? "text-emerald-600 dark:text-emerald-400"
-        : "text-amber-600 dark:text-amber-400",
-    },
-    {
-      label: "Avg response",
-      value: formatMs(avgMs),
-      icon: Clock,
-      tone: "text-foreground",
-    },
-    {
-      label: "Uptime (30d)",
-      value: formatPercent(overallUptime),
-      icon: Activity,
-      tone: "text-foreground",
-    },
-  ];
-
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-      {stats.map((s) => (
-        <div
-          key={s.label}
-          className="flex items-center gap-3 rounded-xl bg-card p-4 ring-1 ring-foreground/10"
-        >
-          <div className="flex size-9 items-center justify-center rounded-lg bg-muted">
-            <s.icon className="size-5 text-muted-foreground" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-xs text-muted-foreground">{s.label}</div>
-            <div className={`text-lg font-semibold tabular-nums ${s.tone}`}>
-              {s.value}
-            </div>
-          </div>
-        </div>
-      ))}
+    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 font-mono text-sm text-muted-foreground bg-muted/10 p-4 rounded-lg border border-border">
+      <div className="flex items-center gap-2">
+        <div className={`w-2 h-2 rounded-full ${allUp ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"}`}></div>
+        <span>{operational}/{total} apps operational</span>
+      </div>
+      <div className="flex gap-4">
+        <span>avg latency: <span className="text-foreground">{formatMs(avgMs)}</span></span>
+        <span className="hidden sm:inline">|</span>
+        <span>30-day uptime: <span className="text-foreground">{formatPercent(overallUptime)}</span></span>
+      </div>
     </div>
   );
 }

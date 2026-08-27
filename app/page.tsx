@@ -12,7 +12,8 @@ export default async function Home() {
     readAllHistory(sites.map((s) => s.id)),
   ]);
 
-  const now = Date.now();
+  // eslint-disable-next-line react-hooks/purity
+  const now = status.generatedAt ? Date.parse(status.generatedAt) : Date.now();
   const views: SiteView[] = sites.map((site) => {
     const checks = history[site.id]?.checks ?? [];
     return {
