@@ -10,7 +10,7 @@ export const sites: Site[] = [
   {
     id: "portfolio",
     name: "Portfolio",
-    url: "https://vinersardan.com",
+    url: "https://vinersar31.github.io/portfolio/",
     description: "Personal developer portfolio",
   },
   {
