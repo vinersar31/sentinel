@@ -1,13 +1,21 @@
-
 "use client";
 
-import { CheckNowButton } from "@/components/check-now-button";
-import { formatPercent } from "@/lib/format";
-import type { Check, Site, SiteStatus } from "@/lib/types";
-import { ResponseChart } from "@/components/response-chart";
+import { useState, type ReactNode } from "react";
 import { Globe } from "lucide-react";
-import { hostOf } from "@/lib/format";
-import { useState } from "react";
+
+import { CheckNowButton } from "@/components/check-now-button";
+import { RelativeTime } from "@/components/relative-time";
+import { ResponseChart } from "@/components/response-chart";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { formatMs, formatPercent, hostOf } from "@/lib/format";
+import type { Check, Site, SiteStatus } from "@/lib/types";
 
 export interface UptimeStat {
   label: string;
@@ -21,74 +29,143 @@ interface StatusCardProps {
   uptime: UptimeStat[];
 }
 
+function StatusBadge({ up }: { up: boolean | null }) {
+  if (up === null) {
+    return (
+      <Badge variant="secondary" className="gap-1.5">
+        <span className="size-1.5 rounded-full bg-muted-foreground" />
+        Unknown
+      </Badge>
+    );
+  }
+  if (up) {
+    return (
+      <Badge className="gap-1.5 border-emerald-500/20 bg-emerald-500/15 text-emerald-700 dark:text-emerald-400">
+        <span className="size-1.5 animate-pulse rounded-full bg-emerald-500" />
+        Operational
+      </Badge>
+    );
+  }
+  return (
+    <Badge variant="destructive" className="gap-1.5">
+      <span className="size-1.5 rounded-full bg-destructive" />
+      Down
+    </Badge>
+  );
+}
+
+function uptimeTone(v: number | null): string {
+  if (v === null) return "text-muted-foreground";
+  if (v >= 99) return "text-emerald-600 dark:text-emerald-400";
+  if (v >= 95) return "text-amber-600 dark:text-amber-400";
+  return "text-red-600 dark:text-red-400";
+}
+
 function Favicon({ url }: { url: string }) {
   const [errored, setErrored] = useState(false);
   if (errored) {
-    return <Globe className="size-4 text-muted-foreground" />;
+    return <Globe className="size-5 text-muted-foreground" />;
   }
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={`https://icons.duckduckgo.com/ip3/${hostOf(url)}.ico`}
       alt=""
-      width={16}
-      height={16}
-      className="size-4 rounded"
+      width={20}
+      height={20}
+      className="size-5 rounded"
       onError={() => setErrored(true)}
     />
   );
 }
 
+function Metric({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <div className="rounded-lg bg-muted/50 px-2 py-1.5">
+      <div className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">
+        {label}
+      </div>
+      <div className="font-medium tabular-nums">{value}</div>
+    </div>
+  );
+}
+
 export function StatusCard({ site, status, checks, uptime }: StatusCardProps) {
   const up = status ? status.up : null;
-  const isUp = up === true;
   const chartColor = up === false ? "#ef4444" : "#10b981";
 
-  const uptime24h = uptime.find(u => u.label === "24h")?.value ?? null;
-  const uptime7d = uptime.find(u => u.label === "7d")?.value ?? null;
-  const uptime30d = uptime.find(u => u.label === "30d")?.value ?? null;
-
   return (
-    <div className="bg-card text-card-foreground rounded-lg p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border border-border shadow-sm">
-      <div className="flex flex-col gap-2 flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          {up === null ? (
-            <div className="w-2 h-2 rounded-full bg-muted-foreground"></div>
-          ) : isUp ? (
-            <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-          ) : (
-            <div className="w-2 h-2 rounded-full bg-destructive shadow-[0_0_8px_rgba(239,68,68,0.5)]"></div>
-          )}
-          <h3 className="font-semibold text-lg m-0 truncate flex items-center gap-2">
+    <Card>
+      <CardHeader className="flex flex-row items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="flex size-9 items-center justify-center rounded-lg bg-muted">
             <Favicon url={site.url} />
-            <a href={site.url} target="_blank" rel="noreferrer" className="hover:underline">{site.name}</a>
-          </h3>
-        </div>
-        <p className="text-muted-foreground font-mono text-sm m-0 truncate">{site.description || hostOf(site.url)}</p>
-      </div>
-
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-6 flex-1 w-full justify-between md:justify-end">
-        <div className="flex gap-4 font-mono text-sm text-muted-foreground">
-          <div className="flex flex-col items-center">
-            <span className={uptime24h === null ? "text-muted-foreground" : uptime24h >= 99 ? "text-emerald-500" : uptime24h >= 95 ? "text-amber-500" : "text-destructive"}>{formatPercent(uptime24h)}</span>
-            <span className="text-[10px] uppercase tracking-widest opacity-70">24h</span>
           </div>
-          <div className="flex flex-col items-center">
-            <span className={uptime7d === null ? "text-muted-foreground" : uptime7d >= 99 ? "text-emerald-500" : uptime7d >= 95 ? "text-amber-500" : "text-destructive"}>{formatPercent(uptime7d)}</span>
-            <span className="text-[10px] uppercase tracking-widest opacity-70">7d</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className={uptime30d === null ? "text-muted-foreground" : uptime30d >= 99 ? "text-emerald-500" : uptime30d >= 95 ? "text-amber-500" : "text-destructive"}>{formatPercent(uptime30d)}</span>
-            <span className="text-[10px] uppercase tracking-widest opacity-70">30d</span>
+          <div>
+            <CardTitle>
+              <a
+                href={site.url}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:underline"
+              >
+                {site.name}
+              </a>
+            </CardTitle>
+            <div className="text-xs text-muted-foreground">
+              {hostOf(site.url)}
+            </div>
           </div>
         </div>
+        <StatusBadge up={up} />
+      </CardHeader>
 
-        <div className="w-[100px] h-10 hidden sm:block shrink-0">
-          <ResponseChart checks={checks} color={chartColor} />
+      <CardContent className="flex flex-col gap-4">
+        <div className="grid grid-cols-3 gap-2 text-sm">
+          <Metric label="Response" value={formatMs(status?.responseTimeMs ?? null)} />
+          <Metric
+            label="HTTP"
+            value={status?.statusCode != null ? String(status.statusCode) : "—"}
+          />
+          <Metric
+            label="Checked"
+            value={<RelativeTime iso={status?.checkedAt ?? null} />}
+          />
         </div>
 
+        <div className="grid grid-cols-3 gap-2">
+          {uptime.map((u) => (
+            <div
+              key={u.label}
+              title={`Uptime over the last ${u.label}`}
+              className="rounded-lg bg-muted/50 px-2 py-1.5 text-center"
+            >
+              <div className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">
+                {u.label}
+              </div>
+              <div
+                className={`text-sm font-semibold tabular-nums ${uptimeTone(u.value)}`}
+              >
+                {formatPercent(u.value)}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <ResponseChart checks={checks} color={chartColor} />
+      </CardContent>
+
+      <CardFooter className="justify-between">
         <CheckNowButton url={site.url} />
-      </div>
-    </div>
+        <a
+          href={site.url}
+          target="_blank"
+          rel="noreferrer"
+          className="text-xs text-muted-foreground hover:text-foreground hover:underline"
+        >
+          Open ↗
+        </a>
+      </CardFooter>
+    </Card>
   );
 }
