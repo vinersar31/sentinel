@@ -1,14 +1,6 @@
 {
   "incidents": [
     {
-      "id": "sentinel-2026-08-04T16:52:30.402Z",
-      "siteId": "sentinel",
-      "siteName": "Sentinel",
-      "start": "2026-08-04T16:52:30.402Z",
-      "end": "2026-08-04T18:28:22.030Z",
-      "lastCode": 503
-    },
-    {
       "id": "portfolio-2026-08-25T21:29:47.624Z",
       "siteId": "portfolio",
       "siteName": "Portfolio",
