@@ -25,13 +25,7 @@ interface DashboardProps {
 export function Dashboard({ sites, generatedAt, incidents }: DashboardProps) {
   const total = sites.length;
   const operational = sites.filter((s) => s.status?.up).length;
-
-  const latencies = sites
-    .map((s) => s.status?.responseTimeMs)
-    .filter((n): n is number => typeof n === "number");
-  const avgMs = latencies.length
-    ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length)
-    : null;
+  const activeIncidents = incidents.filter((i) => i.end === null).length;
 
   const uptimes30 = sites
     .map((s) => s.uptime.find((u) => u.label === "30d")?.value ?? null)
@@ -64,7 +58,7 @@ export function Dashboard({ sites, generatedAt, incidents }: DashboardProps) {
         <SummaryBar
           operational={operational}
           total={total}
-          avgMs={avgMs}
+          activeIncidents={activeIncidents}
           overallUptime={overallUptime}
         />
       </section>

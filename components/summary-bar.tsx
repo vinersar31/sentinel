@@ -1,36 +1,41 @@
-import { Activity, Clock, ShieldCheck } from "lucide-react";
+import { Activity, AlertCircle, CheckCircle2, ShieldCheck } from "lucide-react";
 
-import { formatMs, formatPercent } from "@/lib/format";
+import { formatPercent } from "@/lib/format";
 
 interface SummaryBarProps {
   operational: number;
   total: number;
-  avgMs: number | null;
+  activeIncidents: number;
   overallUptime: number | null;
 }
 
 export function SummaryBar({
   operational,
   total,
-  avgMs,
+  activeIncidents,
   overallUptime,
 }: SummaryBarProps) {
   const allUp = operational === total;
+  const hasActiveIncidents = activeIncidents > 0;
 
   const stats = [
     {
       label: "Operational",
-      value: `${operational}/${total}`,
+      value: `${operational}/${total} Apps`,
       icon: ShieldCheck,
       tone: allUp
         ? "text-emerald-600 dark:text-emerald-400"
         : "text-amber-600 dark:text-amber-400",
     },
     {
-      label: "Avg response",
-      value: formatMs(avgMs),
-      icon: Clock,
-      tone: "text-foreground",
+      label: "Active Incidents",
+      value: hasActiveIncidents
+        ? `${activeIncidents} Active`
+        : "None",
+      icon: hasActiveIncidents ? AlertCircle : CheckCircle2,
+      tone: hasActiveIncidents
+        ? "text-rose-600 dark:text-rose-400"
+        : "text-emerald-600 dark:text-emerald-400",
     },
     {
       label: "Uptime (30d)",
