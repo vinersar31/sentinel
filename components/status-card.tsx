@@ -5,7 +5,7 @@ import { Globe } from "lucide-react";
 
 import { CheckNowButton } from "@/components/check-now-button";
 import { RelativeTime } from "@/components/relative-time";
-import { ResponseChart } from "@/components/response-chart";
+import { UptimeBar } from "@/components/uptime-bar";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -14,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatMs, formatPercent, hostOf } from "@/lib/format";
+import { formatPercent, hostOf } from "@/lib/format";
 import type { Check, Site, SiteStatus } from "@/lib/types";
 
 export interface UptimeStat {
@@ -92,7 +92,6 @@ function Metric({ label, value }: { label: string; value: ReactNode }) {
 
 export function StatusCard({ site, status, checks, uptime }: StatusCardProps) {
   const up = status ? status.up : null;
-  const chartColor = up === false ? "#ef4444" : "#10b981";
 
   return (
     <Card>
@@ -122,7 +121,18 @@ export function StatusCard({ site, status, checks, uptime }: StatusCardProps) {
 
       <CardContent className="flex flex-col gap-4">
         <div className="grid grid-cols-3 gap-2 text-sm">
-          <Metric label="Response" value={formatMs(status?.responseTimeMs ?? null)} />
+          <Metric
+            label="Status"
+            value={
+              up === true ? (
+                <span className="text-emerald-600 dark:text-emerald-400">Normal</span>
+              ) : up === false ? (
+                <span className="text-rose-600 dark:text-rose-400">Outage</span>
+              ) : (
+                "—"
+              )
+            }
+          />
           <Metric
             label="HTTP"
             value={status?.statusCode != null ? String(status.statusCode) : "—"}
@@ -152,7 +162,7 @@ export function StatusCard({ site, status, checks, uptime }: StatusCardProps) {
           ))}
         </div>
 
-        <ResponseChart checks={checks} color={chartColor} />
+        <UptimeBar checks={checks} up={up} daysCount={30} />
       </CardContent>
 
       <CardFooter className="justify-between">

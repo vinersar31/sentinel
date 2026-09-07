@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Sentinel — App Status Dashboard",
   description:
-    "Live uptime, response time, and incident history for my apps.",
+    "Live uptime, operational status, and incident history for my apps.",
 };
 
 export default function RootLayout({

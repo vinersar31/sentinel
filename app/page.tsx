@@ -12,7 +12,8 @@ export default async function Home() {
     readAllHistory(sites.map((s) => s.id)),
   ]);
 
-  const now = Date.now();
+  const parsedGeneratedAt = Date.parse(status.generatedAt);
+  const now = Number.isNaN(parsedGeneratedAt) ? 0 : parsedGeneratedAt;
   const views: SiteView[] = sites.map((site) => {
     const checks = history[site.id]?.checks ?? [];
     return {
