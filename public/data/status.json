@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-27T23:35:46.500Z",
+  "generatedAt": "2026-10-28T04:35:26.170Z",
   "sites": [
     {
       "id": "portfolio",
@@ -8,8 +8,8 @@
       "description": "Personal developer portfolio",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 96,
-      "checkedAt": "2026-10-27T23:35:46.500Z"
+      "responseTimeMs": 410,
+      "checkedAt": "2026-10-28T04:35:26.170Z"
     },
     {
       "id": "loan-tracker",
@@ -18,8 +18,8 @@
       "description": "Loan tracking web app",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 55,
-      "checkedAt": "2026-10-27T23:35:46.500Z"
+      "responseTimeMs": 70,
+      "checkedAt": "2026-10-28T04:35:26.170Z"
     },
     {
       "id": "personal-ops",
@@ -28,8 +28,8 @@
       "description": "Personal operations dashboard",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 117,
-      "checkedAt": "2026-10-27T23:35:46.500Z"
+      "responseTimeMs": 69,
+      "checkedAt": "2026-10-28T04:35:26.170Z"
     },
     {
       "id": "sentinel",
@@ -38,8 +38,8 @@
       "description": "Sentinel status dashboard",
       "up": true,
       "statusCode": 200,
-      "responseTimeMs": 104,
-      "checkedAt": "2026-10-27T23:35:46.500Z"
+      "responseTimeMs": 75,
+      "checkedAt": "2026-10-28T04:35:26.170Z"
     }
   ]
 }
